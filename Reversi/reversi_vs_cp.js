@@ -1,0 +1,154 @@
+            (function() {
+                var disc = {
+                    empty: 0,
+                    black: 1,
+                    white: 2,
+                }
+                var turn;
+                var computer = 2;
+                
+                var checkPiece = function(x, y, flip) {
+                    var ret = 0;
+                    for(var dx = -1; dx <= 1; dx++) {
+                        for(var dy = -1; dy <= 1; dy++) {
+                            if(dx == 0 && dy == 0) {
+                                continue;
+                            }
+                            var nx = x + dx;
+                            var ny = y + dy;
+                            var n = 0;
+                            while(board[nx][ny] == 3 - turn) {
+                                n++;
+                                nx += dx;
+                                ny += dy;
+                            }
+                            if(n > 0 && board[nx][ny] == turn) {
+                                ret += n;
+                                if(flip) {
+                                    nx = x + dx;
+                                    ny = y + dy;
+                                    while(board[nx][ny] == 3 - turn) {
+                                        board[nx][ny] = turn;
+                                        nx += dx;
+                                        ny += dy;
+                                    }
+                                    board[x][y] = turn;
+                                }
+                            }
+                        }
+                    }
+                    return ret;
+                };
+                
+                var computerMove = function() {
+                    if (turn == computer) {
+                        for(var x = 1; x<= 8; x++) {
+                            for(var y = 1; y <= 8; y++) {
+                                if(board[x][y] == disc.empty && checkPiece(x, y, true)) {
+                                    turnChange();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                };
+                
+                var turnChange = function() {
+                    var b = 0;
+                    var w = 0;
+                    turn = 3 - turn;
+                    var message = (
+                        (turn == 1)
+                            ? "black"
+                            : "white"
+                        );
+                        
+                    for(var x = 1; x<= 8; x++) {
+                        for(var y = 1; y <= 8; y++) {
+                            if(board[x][y] == disc.empty && checkPiece(x, y, false)) {
+                                document.getElementById("message").innerHTML = message + "'s move";
+                                showBoard();
+                                computerMove();
+                                return;
+                            }
+                        }
+                    }
+                    turn = 3 - turn;
+                    message += " pass<br />" + (
+                        (turn == 1)
+                            ? "black"
+                            : "white"
+                    ) + "'s move";
+                     for(var x = 1; x <= 8; x++) {
+                        for(var y = 1; y <= 8; y++) {
+                            if(board[x][y] == disc.empty && checkPiece(x, y, false)) {
+                                document.getElementById("message").innerHTML = message;
+                                showBoard();
+                                computerMove();
+                                return;
+                            } else {
+                                if(board[x][y] == disc.black) {
+                                    b++;
+                                }
+                                if(board[x][y] == disc.white) {
+                                    w++;
+                                }
+                            }
+                        }
+                    }
+                    
+                    message = "black:" + b + "white:" + w + "<br>";
+                    if(b == w) {
+                        message += "draw";
+                    } else {
+                        message += (
+                            (b > w)
+                                ? "black"
+                                : "white"
+                        ) + " won";
+                    }
+                    document.getElementById("message").innerHTML = message;
+                    showBoard();
+                };
+                
+                var piece;
+                var showBoard = function() {
+                    var b = document.getElementById("board");
+                    while(b.firstChild) {
+                        b.removeChild(b.firstChild);
+                    }
+                    for(var y = 1; y <= 8; y++) {
+                        for(var x = 1; x <= 8; x++) {
+                            var c = piece[board[x][y]].cloneNode(true);
+                            c.style.left = ((x - 1) * 32) + "px";
+                            c.style.top = ((y - 1) * 32) + "px";
+                            b.appendChild(c);
+                            (function() {
+                                    var _x = x, _y = y;
+                                    c.onclick = function() {
+                                        if(checkPiece(_x, _y, true)) {
+                                            turnChange();
+                                        }
+                                    };
+                                })();
+                        }
+                    }
+                };
+                
+                var board = [];
+                onload = function() {
+                    turn = 2;
+                    piece = [document.getElementById("cell"), document.getElementById("black"), document.getElementById("white")];
+                    for(var i = 0; i < 10; i++) {
+                        board[i] = [];
+                        for(var j = 0; j < 10; j++) {
+                            board[i][j] = disc.empty;
+                        }
+                    }
+                    board[4][5] = disc.black;
+                    board[5][4] = disc.black;
+                    board[4][4] = disc.white;
+                    board[5][5] = disc.white;
+                    turnChange();
+                };
+            })();

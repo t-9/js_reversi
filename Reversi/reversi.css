@@ -1,0 +1,49 @@
+@charset "utf-8";
+
+div#assets {
+    display: none;
+}
+
+div#cell {
+    position: absolute;
+    width: 33px;
+    height: 33px;
+    background-color: #000;
+}
+
+div#white {
+    position: absolute;
+    width: 33px;
+    height: 33px;
+    background-color: #000;
+}
+
+div#black {
+    position: absolute;
+    width: 33px;
+    height: 33px;
+    background-color: #000;
+}
+
+div#board {
+    position: relative;
+    width: 257px;
+    height: 257px;
+}
+
+div.grid {
+    position: relative;
+    top: 1px;
+    left: 1px;
+    width: 31px;
+    height: 31px;
+    background-color: #00ee00;
+}
+
+img.disc {
+    position: relative;
+    top: 1px;
+    left: 1px;
+    width: 31px;
+    height: 31px;
+}
